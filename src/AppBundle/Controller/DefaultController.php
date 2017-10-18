@@ -35,14 +35,14 @@ class DefaultController extends Controller
         $result = $api->getUpdates(); //Передаем в переменную $result полную информацию о сообщении пользователя
         $result = array_pop($result);
 
-//        dump($result->getMessage()->getText());
-//        die();
+        dump($api->getUpdates());
+        die();
 
         $text = $result->getMessage()->getText(); //Текст сообщения
         $chat_id = $result->getMessage()->getChat()->getId(); //Уникальный идентификатор пользователя
         $name =  $result->getMessage()->getFrom()->getUsername(); //Юзернейм пользователя
         $keyboard = [
-            ["Последние статьи"],
+//            ["Последние статьи"],
             ["Картинка"],
             ["Гифка"],
             [
@@ -57,8 +57,8 @@ class DefaultController extends Controller
             if ($text == "/start") {
                 $reply = "Отправьте вашы данные";
                 $reply_markup = new  ReplyKeyboardMarkup($keyboard);
-//                $api->sendMessage($chat_id, $reply, null, false, null, $reply_markup);
-                $api->sendMessage($chat_id, $reply, "Markdown", false, null, $reply_markup);
+                $api->sendMessage($chat_id, $reply, null, false, null, $reply_markup);
+//                $api->sendMessage($chat_id, $reply, "Markdown", false, null, $reply_markup);
             }
             elseif ($text == "/help") {
                 $reply = "Информация с помощью.";
