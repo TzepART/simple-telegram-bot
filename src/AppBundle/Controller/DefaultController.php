@@ -2,12 +2,12 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use TelegramBot\Api\BotApi;
-use TelegramBot\Api\Types\ForceReply;
-use TelegramBot\Api\Types\Inline\InlineKeyboardMarkup;
+use TelegramBot\Api\Types\Contact;
 use TelegramBot\Api\Types\ReplyKeyboardMarkup;
 
 class DefaultController extends Controller
@@ -34,7 +34,7 @@ class DefaultController extends Controller
         $result = $api->getUpdates(); //Передаем в переменную $result полную информацию о сообщении пользователя
         $result = array_pop($result);
 
-//        dump($result);
+//        dump($result->getMessage()->getContact());
 //        die();
 
         $text = $result->getMessage()->getText(); //Текст сообщения
@@ -45,13 +45,26 @@ class DefaultController extends Controller
 //            ["Картинка"],
 //            ["Гифка"],
             [
-                ["text"=> "My phone number and location", "request_contact" => true, "request_location" => true]
+                ["text"=> "My phone number", "request_contact" => true, "request_location" => true]
             ]
         ]; //Клавиатура
 
+        if($result->getMessage()->getContact() instanceof Contact){
+            $contact = $result->getMessage()->getContact();
+            $user = new User();
+            $user->setPhone($contact->getPhoneNumber());
+            $user->setUsername($contact->getFirstName());
+            $user->setEmail($contact->getUserId()."sdsds@sdsd.com");
+            $user->setTelegramId($contact->getUserId());
+            $user->setPassword("qqqqqqq");
+            $user->setRoles(["ROLE_USER"]);
+            $this->getDoctrine()->getManager()->persist($user);
+            $this->getDoctrine()->getManager()->flush();
+        }
+
         if($text){
             if ($text == "/start") {
-                $reply = "Введите кодовое слово, и нажмите отправит";
+                $reply = "Отправьте вашы данные";
                 $reply_markup = new  ReplyKeyboardMarkup($keyboard);
 //                $api->sendMessage($chat_id, $reply, null, false, null, $reply_markup);
                 $api->sendMessage($chat_id, $reply, "Markdown", false, null, $reply_markup);
