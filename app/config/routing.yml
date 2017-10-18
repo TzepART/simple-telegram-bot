@@ -1,0 +1,7 @@
+app:
+    resource: '@AppBundle/Controller/'
+    type: annotation
+
+BoShurikTelegramBotBundle:
+    resource: "@BoShurikTelegramBotBundle/Resources/config/routing.yml"
+    prefix: /_telegram/417855207:AAGwr3cJKOQL_-M-u2MIeBjWGubCS4Yls6k
